@@ -9,6 +9,7 @@ class Map(object):
         return """var marker = new google.maps.Marker({{
                 position: new google.maps.LatLng({lat}, {lon}),
                 map: map,
+                optimized:false,
                 title: {desc},
                 url: "{url}"
                 }});
@@ -27,7 +28,7 @@ class Map(object):
             #     }});"""
             [self.marker_js(latitude=x[0], longtitude=x[1], target_url=x[2], description=x[3]) for x in self._points])
         return """
-            <script src="https://maps.googleapis.com/maps/api/js?key={key}&v=3.exp&sensor=true"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key={key}&v=3.exp"></script>
             <div id="map-canvas" style="height: 100%; width: 100%"></div>
             <script type="text/javascript">
                 var map;

@@ -105,7 +105,6 @@ def makemap(minmdi=8, min_price=150000, max_price=350000, loc="sutton, london", 
     dep_full = dep_df.parse("Sheet1")
     zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
     df3 = zoopla_dep.ix[:,][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
-    print(list(df3))
     map = Map()
     for i in range(len(df3)):
         description = """{addr}
@@ -134,26 +133,24 @@ def form():
     return """<html>
 <head></head><body><form action="/oofy/map" style="display:inline" method="get" target="bottom">
 <table border="0" cellspacing="0" cellpadding="0"><tr>
-<th>Minimum Deprivation Index</th> <td>  <input type="range" name="min_mdi" min="0" max="10"  value="8"></td>
-<th>Minimum Price</th><td><input type="text" name="min_price" value="150000"></td>
-<th>Maximum Price</th><td><input type="text" name="max_price" value="400000"></td>
-<th>Min. Bedrooms</th><td>
+<tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="0" max="10"  value="8"></td>
+  <td>Minimum Price<input type="text" name="min_price" value="150000"></td>
+<td>Maximum Price<input type="text" name="max_price" value="400000"></td>
+<tr><td>Min. Bedrooms
 <select name="min_bed">
   <option value="0">Studio/None</option>
   <option value="1" selected>1</option>
   <option value="2">2</option>
   <option value="3">3</option>
-</select>
-
-<th>Max. Bedrooms</th><td>
+  </select></td>
+<td>Max. Bedrooms
 <select name="max_bed">
   <option value="0">Studio/None</option>
   <option value="1">1</option>
   <option value="2">2</option>
   <option value="3" selected >3</option>
   <option value="999">4+</option>
-
-</select>
+  </select></td>
 
 <td><input type="submit" value="Update Map"></td>
 </tr></table>
@@ -166,7 +163,7 @@ def index():
 <head>
 <title>Oofy</title>
 </head>
-<frameset rows="10%,90%">
+<frameset rows="15%,85%">
    <frame name="top" src="/oofy/form" />
    <frame name="bottom" src="/oofy/map?min_price=150000&max_price=400000&min_bed=1&max_bed=3&mdi=8" />
    <noframes>
