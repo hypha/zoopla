@@ -132,13 +132,13 @@ def map_page():
 @app.route('/oofy/form')
 def form():
     return """<html>
-<head></head><body><form action="/oofy/map" method="get" target="bottom">
-<table><tr>
+<head></head><body><form action="/oofy/map" style="display:inline" method="get" target="bottom">
+<table border="0" cellspacing="0" cellpadding="0"><tr>
 <th>Minimum Deprivation Index</th> <td>  <input type="range" name="min_mdi" min="0" max="10"  value="8"></td>
 <th>Minimum Price</th><td><input type="text" name="min_price" value="150000"></td>
 <th>Maximum Price</th><td><input type="text" name="max_price" value="400000"></td>
 <th>Min. Bedrooms</th><td>
-<select name="min_beds">
+<select name="min_bed">
   <option value="0">Studio/None</option>
   <option value="1" selected>1</option>
   <option value="2">2</option>
@@ -146,7 +146,7 @@ def form():
 </select>
 
 <th>Max. Bedrooms</th><td>
-<select name="max_beds">
+<select name="max_bed">
   <option value="0">Studio/None</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -168,7 +168,7 @@ def index():
 </head>
 <frameset rows="10%,90%">
    <frame name="top" src="/oofy/form" />
-   <frame name="bottom" src="/oofy/map?min_price=150000&max_price=400000&min_beds=1&max_beds=3&mdi=8" />
+   <frame name="bottom" src="/oofy/map?min_price=150000&max_price=400000&min_bed=1&max_bed=3&mdi=8" />
    <noframes>
    <body>
       Your browser does not support frames.
