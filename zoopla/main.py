@@ -7,7 +7,6 @@ from api_factory import api as API
 from geo_info import GeoInfo
 from map import Map
 
-
 def zoopla_list(area, listing_status,  minimum_beds, maximum_price):
     listings = []
     api = API(version=1, api_key='k4uew92e27kzs7nbrk93uguh')
@@ -49,34 +48,61 @@ def property_location(properties):
 
 
 
-properties = sort_listing_dic("edinburgh", "sale", "2", "170000")
-
-locations_info = property_location(properties)
-
-postcodes = [x.postcode for x in locations_info]
-formatted_addresses = [x.address() for x in locations_info]
-
-prop_df = property_df(properties)
+# properties = sort_listing_dic("edinburgh", "sale", "2", "350000")
+#
+# locations_info = property_location(properties)
+#
+# postcodes = [x.postcode for x in locations_info]
+# formatted_addresses = [x.address() for x in locations_info]
+#
+# prop_df = property_df(properties)
 # locations = [x.loc_info for x in locations_info]
+#
+# prop_df["Postcode"] = postcodes
+# prop_df["formatted_address"] = formatted_addresses
+#
+# dep_df = pd.ExcelFile("./Deprivation_Index_2016.xls")
+#
+# dep_full = dep_df.parse("All postcodes")
+#
+# zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+#
+# df3 = zoopla_dep[["formatted_address", "details_url", "latitude", "longitude"]][zoopla_dep["SIMD16_Vigintile"] > 17]
+#
+# map = Map()
+#
+# for i in range(len(df3)):
+#     map.add_point((df3.iloc[i].latitude, df3.iloc[i].longitude))
+#
+#
+# with open("output1.html", "w") as out:
+#     print(map, file=out)
 
-prop_df["Postcode"] = postcodes
-prop_df["formatted_address"] = formatted_addresses
 
-dep_df = pd.ExcelFile("/home/raquel/Documents/Deprivation_Index.xls")
+def makemap():
+    ## for london
+    properties = sort_listing_dic("sutton, london", "sale", "2", "350000")
+    locations_info = property_location(properties)
 
-dep_full = dep_df.parse("Sheet1")
+    postcodes = [x.postcode for x in locations_info]
+    formatted_addresses = [x.address() for x in locations_info]
 
-zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+    prop_df = property_df(properties)
+    locations = [x.loc_info for x in locations_info]
 
-df3 = zoopla_dep[["formatted_address", "details_url", "latitude", "longitude"]][zoopla_dep["SIMD 2012 vigintile"] > 17]
-
-map = Map()
-
-for i in range(len(df3)):
-    map.add_point((df3.irow(i).latitude, df3.irow(i).longitude))
+    prop_df["Postcode"] = postcodes
+    prop_df["formatted_address"] = formatted_addresses
 
 
-with open("output.html", "w") as out:
-    print (map, file=out)
+    dep_df = pd.ExcelFile("./sutton-deprivation-data.xlsx")
+    dep_full = dep_df.parse("Sheet1")
+    zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+    df3 = zoopla_dep[["formatted_address", "details_url", "latitude", "longitude"]][zoopla_dep["Index of Multiple Deprivation Decile"] >= 8]
+    map = Map()
+    for i in range(len(df3)):
+        map.add_point((df3.iloc[i].latitude, df3.iloc[i].longitude))
+    return map
 
+with open("output1.html", "w") as out:
+    print(map, file=out)
 
