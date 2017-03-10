@@ -117,10 +117,10 @@ Deprivation: {mdi}""".format(addr=df3.iloc[i].formatted_address, price=df3.iloc[
     return str(map)
 
 
-
 app = Flask(__name__)
+#app.config["APPLICATION_ROOT"] = "/oofy"
 
-@app.route('/map', methods=['POST', 'GET'])
+@app.route('/oofy/map', methods=['POST', 'GET'])
 def map_page():
     #print(request.values.keys())
     #print(makemap(minmdi=int(request.args.get('minmdi', 8))))
@@ -129,10 +129,10 @@ def map_page():
                    max_price=int(request.args.get('max_price', 500000)), loc=request.args.get('loc', 'sutton, london'),
                    min_bed=int(request.args.get('min_bed', 0)), max_bed=int(request.args.get('max_bed', 999)))
 
-@app.route('/form')
+@app.route('/oofy/form')
 def form():
     return """<html>
-<head></head><body><form action="/map" method="get" target="bottom">
+<head></head><body><form action="/oofy/map" method="get" target="bottom">
 <table><tr>
 <th>Minimum Deprivation Index</th> <td>  <input type="range" name="min_mdi" min="0" max="10"  value="8"></td>
 <th>Minimum Price</th><td><input type="text" name="min_price" value="150000"></td>
@@ -159,7 +159,7 @@ def form():
 </tr></table>
 </form></body>"""
 
-@app.route('/')
+@app.route('/oofy/')
 def index():
     return """<!DOCTYPE html>
 <html>
@@ -167,8 +167,8 @@ def index():
 <title>Oofy</title>
 </head>
 <frameset rows="10%,90%">
-   <frame name="top" src="/form" />
-   <frame name="bottom" src="/map?min_price=150000&max_price=400000&min_beds=1&max_beds=3&mdi=8" />
+   <frame name="top" src="/oofy/form" />
+   <frame name="bottom" src="/oofy/map?min_price=150000&max_price=400000&min_beds=1&max_beds=3&mdi=8" />
    <noframes>
    <body>
       Your browser does not support frames.
