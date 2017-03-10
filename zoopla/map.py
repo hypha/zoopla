@@ -27,7 +27,7 @@ class Map(object):
             #     }});"""
             [self.marker_js(latitude=x[0], longtitude=x[1], target_url=x[2], description=x[3]) for x in self._points])
         return """
-            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key={key}&v=3.exp&sensor=true"></script>
             <div id="map-canvas" style="height: 100%; width: 100%"></div>
             <script type="text/javascript">
                 var map;
@@ -41,4 +41,4 @@ class Map(object):
                 google.maps.event.addDomListener(window, 'load', show_map);
             </script>
         """.format(centerLat=centerLat, centerLon=centerLon,
-                   markersCode=markersCode)
+                   markersCode=markersCode, key="AIzaSyASjkgLegAeY8JUmyFz-RIQ0e_dRP8wg1A")
