@@ -86,12 +86,12 @@ def property_location(properties):
 #     print(map, file=out)
 
 
-def makemap(listing_status = "sale", minmdi=8, min_price=150000, max_price=350000, loc="sutton, london", min_bed=0, max_bed=999):
+def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc="edinburgh", min_bed=0, max_bed=999):
     ## for london
     properties = sort_listing_dic(loc, listing_status, min_bed, max_bed, min_price, max_price)
     locations_info = property_location(properties)
 
-    postcodes = [x.postcode for x in locations_info]
+    postcodes = [x.complete_pc() for x in locations_info]
     formatted_addresses = [x.address() for x in locations_info]
 
     prop_df = property_df(properties)

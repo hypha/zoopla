@@ -7,7 +7,7 @@ class GeoInfo():
         self.latitude = self.listing.latitude
         self.longitude = self.listing.longitude
         self.loc_info = self.geo_reverse()
-        self.postcode = self.complete_pc()
+
 
     # given latitude and longitude
     def geo_reverse(self):
@@ -21,7 +21,6 @@ class GeoInfo():
             key="AIzaSyCUheJjOrMCZT2VTw9hdeZKcMW9D8SNQek")
 
         url = "{base}{params}".format(base=base, params=params)
-        print url
         response = requests.get(url)
         try:
             return response.json()['results'][0]
@@ -29,9 +28,11 @@ class GeoInfo():
             return "json_error"
 
     def geo_search(self, address):
+        address = address.replace(",", "").replace(" ", "+")+"+"+str(self.latitude)+"+"+str(self.longitude)
         base = "https://maps.googleapis.com/maps/api/geocode/json?"
-        params = "address={address}".format(
-            address=address)
+        params = "address={address}&key={key}".format(
+            address=address,
+            key="AIzaSyCUheJjOrMCZT2VTw9hdeZKcMW9D8SNQek")
         url = "{base}{params}".format(base=base, params=params)
         response = requests.get(url)
         try:
@@ -55,7 +56,7 @@ class GeoInfo():
 
     def incomplete_pc(self):
         postcode = self.post_code()
-        if len(postcode) == 3 or len(postcode) == 4:
+        if len(postcode) == 3 or len(postcode) == 4 or postcode == "json_error":
             return True
 
     def coordinate_pc_complete(self):
@@ -70,10 +71,11 @@ class GeoInfo():
         return postcode
 
     def complete_pc(self):
-        postcode = self.post_code()
+
         if self.incomplete_pc():
-            postcode = self.coordinate_pc_complete()
-        if self.incomplete_pc():
+            print self.listing.displayable_address, self.latitude, self.longitude
             postcode = self.address_pc_complete()
+        else:
+            postcode = self.post_code()
         return postcode
 
