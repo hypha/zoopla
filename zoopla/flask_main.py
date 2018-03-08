@@ -113,13 +113,14 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
         df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Vigintile"] >= minmdi]
         df3.rename(columns={'SIMD16_Vigintile': 'MDI Vigintile'}, inplace=True)
     map = Map()
-    for i in range(len(df3)):
-        description = """{addr}
-                        £{price}
-                        Bedrooms: {beds}
-                        Deprivation: {mdi}""".format(addr=df3.iloc[i].formatted_address, price=df3.iloc[i].price, beds=df3.iloc[i].num_bedrooms,
-                             mdi=df3.iloc[i]['MDI Vigintile'])
-        map.add_point((df3.iloc[i].latitude, df3.iloc[i].longitude, df3.iloc[i].details_url, json.dumps(description)))
+    if 'df3' in locals():
+        for i in range(len(df3)):
+            description = """{addr}
+                            £{price}
+                            Bedrooms: {beds}
+                            Deprivation: {mdi}""".format(addr=df3.iloc[i].formatted_address, price=df3.iloc[i].price, beds=df3.iloc[i].num_bedrooms,
+                                 mdi=df3.iloc[i]['MDI Vigintile'])
+            map.add_point((df3.iloc[i].latitude, df3.iloc[i].longitude, df3.iloc[i].details_url, json.dumps(description)))
     return str(map)
 
 
