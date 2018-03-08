@@ -14,10 +14,11 @@ class GeoInfo():
         sensor = "true"
 
         base = "http://maps.googleapis.com/maps/api/geocode/json?"
-        params = "latlng={lat},{lng}&sensor={sen}".format(
+        params = "latlng={lat},{lng}&sensor={sen}&key={key}".format(
             lat=self.latitude,
             lng=self.longitude,
-            sen=sensor)
+            sen=sensor,
+            key="AIzaSyCUheJjOrMCZT2VTw9hdeZKcMW9D8SNQek")
 
         url = "{base}{params}".format(base=base, params=params)
         response = requests.get(url)
@@ -27,7 +28,7 @@ class GeoInfo():
             return "json_error"
 
     def geo_search(self, address):
-        base = "http://maps.googleapis.com/maps/api/geocode/json?"
+        base = "https://maps.googleapis.com/maps/api/geocode/json?"
         params = "address={address}".format(
             address=address)
         url = "{base}{params}".format(base=base, params=params)
