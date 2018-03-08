@@ -158,7 +158,7 @@ def form():
   <option value="sale">Sale</option>
   </select></td>
 
-<tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="1" max="20"  value="8"></td>
+<tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="1" max="20"  value="1"></td>
   <td>Minimum Price<input type="text" name="min_price" value="50"></td>
 <td>Maximum Price<input type="text" name="max_price" value="150"></td>
 <tr><td>Min. Bedrooms
