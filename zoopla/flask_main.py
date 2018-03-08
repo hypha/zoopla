@@ -86,9 +86,9 @@ def property_location(properties):
 #     print(map, file=out)
 
 
-def makemap(minmdi=8, min_price=150000, max_price=350000, loc="sutton, london", min_bed=0, max_bed=999):
+def makemap(listing_status = "sale", minmdi=8, min_price=150000, max_price=350000, loc="sutton, london", min_bed=0, max_bed=999):
     ## for london
-    properties = sort_listing_dic(loc, "sale", min_bed, max_bed, min_price, max_price)
+    properties = sort_listing_dic(loc, listing_status, min_bed, max_bed, min_price, max_price)
     locations_info = property_location(properties)
 
     postcodes = [x.postcode for x in locations_info]
@@ -100,18 +100,25 @@ def makemap(minmdi=8, min_price=150000, max_price=350000, loc="sutton, london", 
     prop_df["Postcode"] = postcodes
     prop_df["formatted_address"] = formatted_addresses
 
-
-    dep_df = pd.ExcelFile("./sutton-deprivation-data.xlsx")
-    dep_full = dep_df.parse("Sheet1")
-    zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
-    df3 = zoopla_dep.ix[:,][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
+    if loc == "Sutton, London":
+        dep_df = pd.ExcelFile("./sutton-deprivation-data.xlsx")
+        dep_full = dep_df.parse("Sheet1")
+        zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+        df3 = zoopla_dep.ix[:, ][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
+        df3.rename(columns={'Index of Multiple Deprivation Decile': 'MDI Decile'}, inplace=True)
+    elif loc == "Edinburgh":
+        dep_df = pd.ExcelFile("./Deprivation_Index_2016.xls")
+        dep_full = dep_df.parse("All postcodes")
+        zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+        df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Decile"] >= minmdi]
+        df3.rename(columns={'SIMD16_Decile': 'MDI Decile'}, inplace=True)
     map = Map()
     for i in range(len(df3)):
         description = """{addr}
-£{price}
-Bedrooms: {beds}
-Deprivation: {mdi}""".format(addr=df3.iloc[i].formatted_address, price=df3.iloc[i].price, beds=df3.iloc[i].num_bedrooms,
-                             mdi=df3.iloc[i]['Index of Multiple Deprivation Decile'])
+                        £{price}
+                        Bedrooms: {beds}
+                        Deprivation: {mdi}""".format(addr=df3.iloc[i].formatted_address, price=df3.iloc[i].price, beds=df3.iloc[i].num_bedrooms,
+                             mdi=df3.iloc[i]['MDI Decile'])
         map.add_point((df3.iloc[i].latitude, df3.iloc[i].longitude, df3.iloc[i].details_url, json.dumps(description)))
     return str(map)
 
@@ -124,15 +131,32 @@ def map_page():
     #print(request.values.keys())
     #print(makemap(minmdi=int(request.args.get('minmdi', 8))))
     #print("koko")
-    return makemap(minmdi=int(request.args.get('min_mdi', 8)), min_price=int(request.args.get('min_price', 150000)),
-                   max_price=int(request.args.get('max_price', 500000)), loc=request.args.get('loc', 'sutton, london'),
-                   min_bed=int(request.args.get('min_bed', 0)), max_bed=int(request.args.get('max_bed', 999)))
+    return makemap(listing_status=request.args.get('listing_status', "rent"),
+                   minmdi=int(request.args.get('min_mdi', 8)),
+                   min_price=int(request.args.get('min_price', 250)),
+                   max_price=int(request.args.get('max_price', 650)),
+                   loc=request.args.get('loc', 'edinburgh'),
+                   min_bed=int(request.args.get('min_bed', 0)),
+                   max_bed=int(request.args.get('max_bed', 999)))
 
 @app.route('/oofy/form')
 def form():
     return """<html>
 <head></head><body><form action="/oofy/map" style="display:inline" method="get" target="bottom">
 <table border="0" cellspacing="0" cellpadding="0"><tr>
+
+<tr><td>Location
+<select name="loc">
+  <option value="Edinburgh">Edinburgh</option>
+  <option value="Sutton, London" selected>Sutton, London</option>
+  </select></td>
+
+<tr><td>Location
+<select name="listing_status">
+  <option value="rent">Rent</option>
+  <option value="sale" selected>Sale</option>
+  </select></td>
+
 <tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="0" max="10"  value="8"></td>
   <td>Minimum Price<input type="text" name="min_price" value="150000"></td>
 <td>Maximum Price<input type="text" name="max_price" value="400000"></td>
@@ -165,7 +189,7 @@ def index():
 </head>
 <frameset rows="15%,85%">
    <frame name="top" src="/oofy/form" />
-   <frame name="bottom" src="/oofy/map?min_price=150000&max_price=400000&min_bed=1&max_bed=3&mdi=8" />
+   <frame name="bottom" src="/oofy/map?listing_status=rent&min_price=250&max_price=550&loc=edinburgh&min_bed=1&max_bed=3&mdi=8" />
    <noframes>
    <body>
       Your browser does not support frames.
