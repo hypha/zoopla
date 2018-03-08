@@ -147,19 +147,19 @@ def form():
 
 <tr><td>Location
 <select name="loc">
-  <option value="Edinburgh">Edinburgh</option>
-  <option value="Sutton, London" selected>Sutton, London</option>
+  <option value="Edinburgh" selected>Edinburgh</option>
+  <option value="Sutton, London">Sutton, London</option>
   </select></td>
 
 <tr><td>Location
 <select name="listing_status">
-  <option value="rent">Rent</option>
-  <option value="sale" selected>Sale</option>
+  <option value="rent" selected >Rent</option>
+  <option value="sale">Sale</option>
   </select></td>
 
-<tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="0" max="10"  value="8"></td>
-  <td>Minimum Price<input type="text" name="min_price" value="150000"></td>
-<td>Maximum Price<input type="text" name="max_price" value="400000"></td>
+<tr><td>Minimum Deprivation Index:  <input type="range"  name="min_mdi" min="1" max="20"  value="8"></td>
+  <td>Minimum Price<input type="text" name="min_price" value="50"></td>
+<td>Maximum Price<input type="text" name="max_price" value="150"></td>
 <tr><td>Min. Bedrooms
 <select name="min_bed">
   <option value="0">Studio/None</option>
@@ -172,8 +172,8 @@ def form():
   <option value="0">Studio/None</option>
   <option value="1">1</option>
   <option value="2">2</option>
-  <option value="3" selected >3</option>
-  <option value="999">4+</option>
+  <option value="3">3</option>
+  <option value="999" selected >4+</option>
   </select></td>
 
 <td><input type="submit" value="Update Map"></td>
