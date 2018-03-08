@@ -13,7 +13,7 @@ class GeoInfo():
     def geo_reverse(self):
         sensor = "true"
 
-        base = "http://maps.googleapis.com/maps/api/geocode/json?"
+        base = "https://maps.googleapis.com/maps/api/geocode/json?"
         params = "latlng={lat},{lng}&sensor={sen}&key={key}".format(
             lat=self.latitude,
             lng=self.longitude,
@@ -21,6 +21,7 @@ class GeoInfo():
             key="AIzaSyCUheJjOrMCZT2VTw9hdeZKcMW9D8SNQek")
 
         url = "{base}{params}".format(base=base, params=params)
+        print url
         response = requests.get(url)
         try:
             return response.json()['results'][0]
