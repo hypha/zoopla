@@ -107,7 +107,7 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
         df3 = zoopla_dep.ix[:, ][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
         df3.rename(columns={'Index of Multiple Deprivation Decile': 'MDI Decile'}, inplace=True)
     elif loc == "Edinburgh":
-        dep_df = pd.ExcelFile("./Deprivation_Index_2016.xls")
+        dep_df = pd.ExcelFile("./Deprivation_Index_2016.xlsx")
         dep_full = dep_df.parse("All postcodes")
         zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
         df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Vigintile"] >= minmdi]
@@ -133,9 +133,9 @@ def map_page():
     #print(makemap(minmdi=int(request.args.get('minmdi', 8))))
     #print("koko")
     return makemap(listing_status=request.args.get('listing_status', "rent"),
-                   minmdi=int(request.args.get('min_mdi', 8)),
-                   min_price=int(request.args.get('min_price', 250)),
-                   max_price=int(request.args.get('max_price', 650)),
+                   minmdi=int(request.args.get('min_mdi', 1)),
+                   min_price=int(request.args.get('min_price', 50)),
+                   max_price=int(request.args.get('max_price', 150)),
                    loc=request.args.get('loc', 'edinburgh'),
                    min_bed=int(request.args.get('min_bed', 0)),
                    max_bed=int(request.args.get('max_bed', 999)))
