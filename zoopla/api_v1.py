@@ -7,7 +7,8 @@ from cStringIO import StringIO
 import json
 from urllib import urlencode
 import logging
-L = logging.getLogger(__name__)
+
+L = logging.getLogger( 'oofy' )
 
 BASE_URL = 'http://api.zoopla.co.uk/api/v1/'
 

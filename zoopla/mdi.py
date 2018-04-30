@@ -1,4 +1,7 @@
 import pandas as pd
+import logging
+
+logger = logging.getLogger( 'oofy' )
 
 
 class Mdi(object):

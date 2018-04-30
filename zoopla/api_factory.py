@@ -2,6 +2,9 @@
 # encoding: utf-8
 
 from api_v1 import _ApiVersion1
+import logging
+
+logger = logging.getLogger( 'oofy' )
 
 
 def api(version, **kwargs):
