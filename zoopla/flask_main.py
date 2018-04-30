@@ -89,11 +89,11 @@ def property_location(properties):
 
 
 def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc="edinburgh", min_bed=0, max_bed=999):
-    app.logger.debug("makemap() has been called")
+    app.logger.debug( "makemap() has been called" )
     ## for london
-    app.logger.debug("retrieving listing via sort_listing()")
+    app.logger.debug( "retrieving listing via sort_listing()" )
     properties = sort_listing_dic(loc, listing_status, min_bed, max_bed, min_price, max_price)
-    app.logger.debug("getting property location information")
+    app.logger.debug( "getting property location information for %d properties" % len(properties) )
     locations_info = property_location(properties)
 
     postcodes = [x.complete_pc() for x in locations_info]
@@ -105,7 +105,7 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
     prop_df["Postcode"] = postcodes
     prop_df["formatted_address"] = formatted_addresses
 
-    app.logger.debug("initialising deprivation index information")
+    app.logger.debug( "initialising deprivation index information" )
     if loc == "Sutton, London":
         dep_df = pd.ExcelFile("./sutton-deprivation-data.xlsx")
         dep_full = dep_df.parse("Sheet1")
@@ -119,7 +119,7 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
         df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Vigintile"] >= minmdi]
         df3.rename(columns={'SIMD16_Vigintile': 'MDI Vigintile'}, inplace=True)
 
-    app.logger.debug("creating map")
+    app.logger.debug( "creating HTML/JS for map" )
     map = Map()
     if 'df3' in locals():
         for i in range(len(df3)):
@@ -133,21 +133,21 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
     return str(map)
 
 # Set up logging
-handler = RotatingFileHandler('oofy-combined.log', maxBytes=500000, backupCount=10)
-handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler = RotatingFileHandler( 'oofy-combined.log', maxBytes=500000, backupCount=10 )
+handler.setLevel( logging.DEBUG )
+formatter = logging.Formatter( '%(asctime)s - %(name)s - %(module)s - %(levelname)s - %(message)s' )
 handler.setFormatter( formatter )
 # Underlying WSGI component logger for access log
-logger = logging.getLogger('werkzeug')
-logger.addHandler(handler)
-app = Flask(__name__)
+logger = logging.getLogger( 'werkzeug' )
+logger.addHandler( handler )
+app = Flask( 'oofy' )
 # Also add flask logs to the same file
 app.logger.addHandler(handler)
 #app.config["APPLICATION_ROOT"] = "/oofy"
 
 @app.route('/oofy/map', methods=['POST', 'GET'])
 def map_page():
-    app.logger.debug("Oofy map (/oofy/map) requested")
+    app.logger.debug( "Oofy map (/oofy/map) requested" )
     #print(request.values.keys())
     #print(makemap(minmdi=int(request.args.get('minmdi', 8))))
     #print("koko")
@@ -161,7 +161,7 @@ def map_page():
 
 @app.route('/oofy/form')
 def form():
-    app.logger.debug("Oofy form (/oofy/form) requested")
+    app.logger.debug( "Oofy form (/oofy/form) requested" )
     return """<html>
 <head></head><body><form action="/oofy/map" style="display:inline" method="get" target="bottom">
 <table border="0" cellspacing="0" cellpadding="0"><tr>
@@ -203,7 +203,7 @@ def form():
 
 @app.route('/oofy/')
 def index():
-    app.logger.debug("Oofy frameset (/oofy/) requested")
+    app.logger.debug( "Oofy frameset (/oofy/) requested" )
     return """<!DOCTYPE html>
 <html>
 <head>

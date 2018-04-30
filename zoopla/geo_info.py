@@ -1,5 +1,7 @@
 import requests
+import logging
 
+logger = logging.getLogger('oofy')
 
 class GeoInfo():
     def __init__(self, listing):
@@ -73,7 +75,7 @@ class GeoInfo():
     def complete_pc(self):
 
         if self.incomplete_pc():
-            print self.listing.displayable_address, self.latitude, self.longitude
+            logger.debug( "%s: %3.4f, %3.4f" % (self.listing.displayable_address, self.latitude, self.longitude) )
             postcode = self.address_pc_complete()
         else:
             postcode = self.post_code()

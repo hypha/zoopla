@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger( 'oofy' )
+
 class Map(object):
     def __init__(self):
         self._points = []
