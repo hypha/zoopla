@@ -106,18 +106,19 @@ def makemap(listing_status = "rent", minmdi=1, min_price=50, max_price=150, loc=
     prop_df["formatted_address"] = formatted_addresses
 
     app.logger.debug( "initialising deprivation index information" )
-    if loc == "Sutton, London":
-        dep_df = pd.ExcelFile("./sutton-deprivation-data.xlsx")
-        dep_full = dep_df.parse("Sheet1")
-        zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
-        df3 = zoopla_dep.ix[:, ][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
-        df3.rename(columns={'Index of Multiple Deprivation Decile': 'MDI Decile'}, inplace=True)
-    elif loc == "Edinburgh":
-        dep_df = pd.ExcelFile("./Deprivation_Index_2016.xlsx")
-        dep_full = dep_df.parse("All postcodes")
-        zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
-        df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Vigintile"] >= minmdi]
-        df3.rename(columns={'SIMD16_Vigintile': 'MDI Vigintile'}, inplace=True)
+    zoopla_dep = prop_df.merge(mdi_df[loc], on=mdi_col[loc]['on'])
+    df3 = zoopla_dep.ix[:, ][zoopla_dep[mdi_col[loc]['col']] >= minmdi]
+    df3.rename(columns={mdi_col[loc]['col']: mdi_col[loc]['to']}, inplace=True)
+    #if loc == "Sutton, London":
+    #    dep_full = pd.read_pickle('sutton-deprivation-data.pkl')
+    #    zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+    #    df3 = zoopla_dep.ix[:, ][zoopla_dep["Index of Multiple Deprivation Decile"] >= minmdi]
+    #    df3.rename(columns={'Index of Multiple Deprivation Decile': 'MDI Decile'}, inplace=True)
+    #elif loc == "Edinburgh":
+    #    dep_full = pd.read_pickle('edinburgh-deprivation-data.pkl')
+    #    zoopla_dep = prop_df.merge(dep_full, on=["Postcode"])
+    #    df3 = zoopla_dep.ix[:,][zoopla_dep["SIMD16_Vigintile"] >= minmdi]
+    #    df3.rename(columns={'SIMD16_Vigintile': 'MDI Vigintile'}, inplace=True)
 
     app.logger.debug( "creating HTML/JS for map" )
     map = Map()
@@ -144,6 +145,14 @@ app = Flask( 'oofy' )
 # Also add flask logs to the same file
 app.logger.addHandler(handler)
 #app.config["APPLICATION_ROOT"] = "/oofy"
+
+# Load deprivation index dataframes once, in advance
+logger.debug("Loading deprivation index data from pickled files")
+mdi_df = {}
+mdi_df['Sutton, London'] = pd.read_pickle( 'sutton-deprivation-data.pkl' )
+mdi_df['Edinburgh'] = pd.read_pickle( 'edinburgh-deprivation-data.pkl' )
+mdi_col = { 'Sutton, London': { 'on': 'Postcode', 'col': 'Index of Multiple Deprivation Decile', 'to': 'MDI Decile' },
+            'Edinburgh': { 'on': 'Postcode', 'col': 'SIMD16_Vigintile', 'to': 'MDI Vigintile' } }
 
 @app.route('/oofy/map', methods=['POST', 'GET'])
 def map_page():
